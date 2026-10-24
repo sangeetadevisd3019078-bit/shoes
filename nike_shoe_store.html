@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoes - Just Do It</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        nike: {
+                            red: '#E52E2E',
+                            orange: '#FF5E3A',
+                            dark: '#111111',
+                            light: '#F5F5F5',
+                            gray: '#707072'
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.08)',
+                        'glow': '0 0 25px rgba(229, 46, 46, 0.4)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glassmorphic {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark-glass {
+            background: rgba(17, 17, 17, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-nike-dark font-sans antialiased overflow-x-hidden selection:bg-nike-red selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-24 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-40 transition-all duration-300" id="navbar">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between glassmorphic my-2 rounded-2xl shadow-sm border border-white/40">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <svg class="h-8 w-auto fill-nike-dark group-hover:fill-nike-red transition-colors duration-300" viewBox="0 0 24 24">
+                    <path d="M21.71 6.3a.996.996 0 0 0-.85-.3c-2.31.33-6.68 1.63-10.82 4.38-3.08 2.05-5.91 4.79-8.41 8.16-.39.52-.08 1.27.56 1.35.32.04.64-.06.88-.27 4.54-3.95 9.87-6.23 15.58-6.73.54-.05 1.18-.55 1.06-1.12l-1-5.47z"/>
+                </svg>
+                <span class="font-extrabold text-2xl tracking-tighter uppercase">NIKE</span>
+            </a>
+
+            <!-- Nav Links -->
+            <ul class="hidden md:flex items-center space-x-8 font-semibold text-sm uppercase tracking-wide">
+                <li><a href="#Home" class="hover:text-nike-red transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-nike-red hover:after:w-full after:transition-all">Home</a></li>
+                <li><a href="#Products" class="hover:text-nike-red transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-nike-red hover:after:w-full after:transition-all">Products</a></li>
+                <li><a href="#About" class="hover:text-nike-red transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-nike-red hover:after:w-full after:transition-all">Customizer</a></li>
+                <li><a href="#Review" class="hover:text-nike-red transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-nike-red hover:after:w-full after:transition-all">Reviews</a></li>
+                <li><a href="#Services" class="hover:text-nike-red transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-nike-red hover:after:w-full after:transition-all">Services</a></li>
+            </ul>
+
+            <!-- Icons & Controls -->
+            <div class="flex items-center space-x-5">
+                <!-- Search Trigger -->
+                <button id="search-btn" class="p-2 rounded-full hover:bg-black/5 text-gray-700 hover:text-nike-red transition-all" title="Search">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+
+                <!-- Wishlist Icon -->
+                <a href="#Products" class="p-2 rounded-full hover:bg-black/5 text-gray-700 hover:text-nike-red transition-all relative" title="Wishlist">
+                    <i class="fa-solid fa-heart text-lg"></i>
+                    <span id="wishlist-count" class="absolute top-0 right-0 bg-nike-red text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center opacity-0 transition-opacity">0</span>
+                </a>
+
+                <!-- Cart Icon -->
+                <button id="cart-btn" class="p-2 rounded-full hover:bg-black/5 text-gray-700 hover:text-nike-red transition-all relative" title="Shopping Cart">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-nike-red text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">0</span>
+                </button>
+
+                <!-- User Icon / Login -->
+                <button id="user-btn" class="p-2 rounded-full hover:bg-black/5 text-gray-700 hover:text-nike-red transition-all" title="Account">
+                    <i class="fa-solid fa-user text-lg"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-gray-700 hover:text-nike-red">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Search Bar Drawer Dynamic Input -->
+        <div id="search-bar" class="hidden max-w-4xl mx-auto px-4 mt-2 transition-all duration-300">
+            <div class="glassmorphic p-3 rounded-2xl shadow-xl flex items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 pl-3"></i>
+                <input type="text" id="search-input" placeholder="Search shoes, sneakers, collections..." class="w-full bg-transparent border-none outline-none text-nike-dark placeholder-gray-400 text-sm">
+                <button id="close-search" class="text-gray-400 hover:text-nike-dark px-3">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden max-w-7xl mx-auto px-4 mt-2">
+            <div class="glassmorphic rounded-2xl p-5 flex flex-col space-y-4 shadow-xl border border-white/50">
+                <a href="#Home" class="mobile-link py-2 px-4 hover:bg-nike-red/10 hover:text-nike-red rounded-xl font-medium">Home</a>
+                <a href="#Products" class="mobile-link py-2 px-4 hover:bg-nike-red/10 hover:text-nike-red rounded-xl font-medium">Products</a>
+                <a href="#About" class="mobile-link py-2 px-4 hover:bg-nike-red/10 hover:text-nike-red rounded-xl font-medium">Customizer</a>
+                <a href="#Review" class="mobile-link py-2 px-4 hover:bg-nike-red/10 hover:text-nike-red rounded-xl font-medium">Reviews</a>
+                <a href="#Services" class="mobile-link py-2 px-4 hover:bg-nike-red/10 hover:text-nike-red rounded-xl font-medium">Services</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="Home" class="min-h-screen pt-28 pb-16 flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-100 via-gray-50 to-red-50">
+        <!-- Background Decorative Elements -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-nike-red/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-10 left-10 w-80 h-80 bg-orange-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-extrabold text-black/[0.03] select-none pointer-events-none uppercase tracking-tighter">NIKE AIR</span>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left Content -->
+                <div class="lg:col-span-6 z-10 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nike-red/10 text-nike-red text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-fire"></i> Next Generation Innovation
+                    </div>
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
+                        AIR MAX <br><span class="bg-gradient-to-r from-nike-red to-nike-orange bg-clip-text text-transparent">COLLECTION</span>
+                    </h1>
+                    <p class="text-gray-600 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+                        Designed with maximum cushioning and iconic style. Experience lightweight performance engineered to push limits and elevate your everyday lifestyle.
+                    </p>
+
+                    <!-- Hero Actions -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#Products" class="w-full sm:w-auto px-8 py-4 bg-nike-dark text-white font-bold rounded-xl shadow-lg hover:bg-nike-red transition-all duration-300 hover:shadow-glow hover:-translate-y-0.5 flex items-center justify-center gap-3 group">
+                            <span>EXPLORE NOW</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#About" class="w-full sm:w-auto px-8 py-4 bg-white/80 border border-gray-200 text-nike-dark font-bold rounded-xl hover:bg-white hover:border-nike-dark transition-all duration-300 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play text-xs text-nike-red"></i> Watch Showcase
+                        </a>
+                    </div>
+
+                    <!-- Social Handles -->
+                    <div class="pt-8 flex items-center justify-center lg:justify-start gap-4 text-gray-500">
+                        <span class="text-xs uppercase font-semibold tracking-wider text-gray-400">Follow Us:</span>
+                        <a href="#" class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-nike-red hover:text-white hover:border-nike-red transition-all"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-nike-red hover:text-white hover:border-nike-red transition-all"><i class="fa-brands fa-twitter text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-nike-red hover:text-white hover:border-nike-red transition-all"><i class="fa-brands fa-instagram text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-nike-red hover:text-white hover:border-nike-red transition-all"><i class="fa-brands fa-tiktok text-xs"></i></a>
+                    </div>
+                </div>
+
+                <!-- Hero Right Image Showcase -->
+                <div class="lg:col-span-6 relative z-10 flex justify-center">
+                    <div class="relative w-full max-w-lg">
+                        <!-- Red Background Glow Circle -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-nike-red to-orange-400 rounded-full filter blur-2xl opacity-30 animate-pulse"></div>
+                        
+                        <!-- Main Hero Floating Shoe -->
+                        <img id="hero-shoe" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=80" alt="Nike Air Max" class="w-full object-contain filter drop-shadow-[0_25px_25px_rgba(0,0,0,0.35)] -rotate-12 hover:rotate-0 transition-transform duration-700 ease-out cursor-pointer transform hover:scale-105">
+
+                        <!-- Dynamic Feature Floating Badges -->
+                        <div class="absolute -bottom-4 left-4 glassmorphic p-4 rounded-2xl shadow-lg border border-white/60 flex items-center gap-3 animate-bounce">
+                            <div class="w-10 h-10 rounded-full bg-nike-red/10 text-nike-red flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 font-medium">Air Tech</p>
+                                <p class="text-sm font-bold text-nike-dark">Ultra Responsive</p>
+                            </div>
+                        </div>
+
+                        <div class="absolute top-8 right-0 glassmorphic p-3 rounded-2xl shadow-lg border border-white/60 hidden sm:flex items-center gap-3">
+                            <div class="flex text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <span class="text-xs font-bold">4.9 (1.2k Reviews)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Catalog Section -->
+    <section id="Products" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <h2 class="text-sm font-bold text-nike-red uppercase tracking-widest mb-1">Explore Catalog</h2>
+                    <h3 class="text-3xl sm:text-4xl font-extrabold text-nike-dark">Trending Footwear</h3>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap items-center gap-2 bg-gray-100 p-1.5 rounded-xl text-xs sm:text-sm font-semibold">
+                    <button class="category-btn active px-4 py-2 rounded-lg bg-white shadow-sm text-nike-dark transition-all" data-category="all">All</button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-gray-600 hover:text-nike-dark transition-all" data-category="running">Running</button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-gray-600 hover:text-nike-dark transition-all" data-category="lifestyle">Lifestyle</button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-gray-600 hover:text-nike-dark transition-all" data-category="basketball">Basketball</button>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="product-grid">
+                <!-- Dynamic Product Cards will be rendered via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Customizer Showcase / About -->
+    <section id="About" class="py-20 bg-gray-900 text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Angle Showcase & Gallery -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-gray-800/60 rounded-3xl p-8 border border-gray-700 backdrop-blur-sm relative flex flex-col items-center justify-center">
+                        <span class="absolute top-4 left-6 text-xs font-bold text-gray-400 tracking-wider uppercase">Interactive View</span>
+                        
+                        <!-- Main Preview Image -->
+                        <img id="customizer-preview" src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=800&q=80" alt="Nike Customizer" class="w-full max-w-md object-contain h-72 my-4 transition-all duration-500 transform hover:scale-105">
+
+                        <!-- Thumbnails -->
+                        <div class="flex items-center justify-center gap-4 mt-4">
+                            <button onclick="changeCustomizerImage('https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=800&q=80')" class="w-16 h-16 rounded-xl border-2 border-nike-red bg-gray-700/50 p-1 hover:opacity-80 transition-all focus:outline-none">
+                                <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover rounded-lg">
+                            </button>
+                            <button onclick="changeCustomizerImage('https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80')" class="w-16 h-16 rounded-xl border-2 border-transparent hover:border-nike-red bg-gray-700/50 p-1 hover:opacity-80 transition-all focus:outline-none">
+                                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover rounded-lg">
+                            </button>
+                            <button onclick="changeCustomizerImage('https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80')" class="w-16 h-16 rounded-xl border-2 border-transparent hover:border-nike-red bg-gray-700/50 p-1 hover:opacity-80 transition-all focus:outline-none">
+                                <img src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover rounded-lg">
+                            </button>
+                            <button onclick="changeCustomizerImage('https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=800&q=80')" class="w-16 h-16 rounded-xl border-2 border-transparent hover:border-nike-red bg-gray-700/50 p-1 hover:opacity-80 transition-all focus:outline-none">
+                                <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover rounded-lg">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customizer Info -->
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-nike-red font-bold text-sm uppercase tracking-widest">Heritage & Craft</span>
+                    <h2 class="text-4xl font-extrabold leading-tight">ENGINEERED TO SPECIFICATIONS OF CHAMPIONS</h2>
+                    <p class="text-gray-400 leading-relaxed text-sm">
+                        Combining classic design cues from legendary 1990s basketball footwear with modern responsive Air cushioning. Crafted using high-grade eco-friendly materials engineered for longevity.
+                    </p>
+
+                    <!-- Selectors -->
+                    <div class="space-y-4 pt-2">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Select Shoe Size (US)</label>
+                            <div class="flex flex-wrap gap-2" id="size-selector">
+                                <button class="size-btn px-4 py-2 text-xs font-bold rounded-lg border border-gray-700 hover:border-nike-red transition-all">8</button>
+                                <button class="size-btn px-4 py-2 text-xs font-bold rounded-lg border border-gray-700 hover:border-nike-red transition-all">8.5</button>
+                                <button class="size-btn active px-4 py-2 text-xs font-bold rounded-lg bg-nike-red text-white border border-nike-red transition-all">9</button>
+                                <button class="size-btn px-4 py-2 text-xs font-bold rounded-lg border border-gray-700 hover:border-nike-red transition-all">9.5</button>
+                                <button class="size-btn px-4 py-2 text-xs font-bold rounded-lg border border-gray-700 hover:border-nike-red transition-all">10</button>
+                                <button class="size-btn px-4 py-2 text-xs font-bold rounded-lg border border-gray-700 hover:border-nike-red transition-all">11</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Select Accent Color</label>
+                            <div class="flex items-center gap-3">
+                                <button class="w-8 h-8 rounded-full bg-red-600 ring-2 ring-offset-2 ring-offset-gray-900 ring-white transition-all"></button>
+                                <button class="w-8 h-8 rounded-full bg-blue-600 hover:ring-2 hover:ring-offset-2 hover:ring-offset-gray-900 hover:ring-white transition-all"></button>
+                                <button class="w-8 h-8 rounded-full bg-emerald-500 hover:ring-2 hover:ring-offset-2 hover:ring-offset-gray-900 hover:ring-white transition-all"></button>
+                                <button class="w-8 h-8 rounded-full bg-amber-400 hover:ring-2 hover:ring-offset-2 hover:ring-offset-gray-900 hover:ring-white transition-all"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button onclick="addCustomizedToCart()" class="w-full py-4 bg-nike-red text-white font-bold rounded-xl hover:bg-red-600 transition-colors shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> ADD CUSTOM EDITION - $189.99
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews / Testimonials Section -->
+    <section id="Review" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-sm font-bold text-nike-red uppercase tracking-widest mb-1">Community Feedback</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-nike-dark">What Athletes Say</h3>
+            </div>
+
+            <!-- Review Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="glassmorphic p-8 rounded-2xl shadow-sm border border-gray-200/60 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-400 gap-1 mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                            "The responsiveness of the Air unit is incredible. I use them for daily training runs and casual wear. Super comfortable right out of the box!"
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Ranidi Lochana" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h4 class="font-bold text-nike-dark text-sm">Ranidi Lochana</h4>
+                            <span class="text-xs text-gray-500">Marathon Runner</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glassmorphic p-8 rounded-2xl shadow-sm border border-gray-200/60 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-400 gap-1 mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                            "Premium build quality and slick aesthetics. The colorways available are unmatched. Definitely worth every penny!"
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Sayuru Tharanga" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h4 class="font-bold text-nike-dark text-sm">Sayuru Tharanga</h4>
+                            <span class="text-xs text-gray-500">Fitness Trainer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glassmorphic p-8 rounded-2xl shadow-sm border border-gray-200/60 relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-amber-400 gap-1 mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                            "The shipping was extremely fast and customer service helped me pick the right fit. Will order another pair soon!"
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Senuda Dilwan" class="w-12 h-12 rounded-full object-cover">
+                        <div>
+                            <h4 class="font-bold text-nike-dark text-sm">Senuda Dilwan</h4>
+                            <span class="text-xs text-gray-500">Basketball Player</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / Value Proposition -->
+    <section id="Services" class="py-16 bg-white border-t border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="p-8 rounded-2xl bg-gray-50 hover:bg-red-50/50 transition-colors group flex items-start gap-5">
+                    <div class="w-14 h-14 rounded-2xl bg-nike-red/10 text-nike-red flex items-center justify-center text-2xl shrink-0 group-hover:bg-nike-red group-hover:text-white transition-all">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-nike-dark mb-1">Express Shipping</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Free standard delivery on all orders over $150 with real-time tracking.</p>
+                    </div>
+                </div>
+
+                <div class="p-8 rounded-2xl bg-gray-50 hover:bg-red-50/50 transition-colors group flex items-start gap-5">
+                    <div class="w-14 h-14 rounded-2xl bg-nike-red/10 text-nike-red flex items-center justify-center text-2xl shrink-0 group-hover:bg-nike-red group-hover:text-white transition-all">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-nike-dark mb-1">30-Day Free Returns</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Not the right fit? Return or exchange hassle-free within 30 days of purchase.</p>
+                    </div>
+                </div>
+
+                <div class="p-8 rounded-2xl bg-gray-50 hover:bg-red-50/50 transition-colors group flex items-start gap-5">
+                    <div class="w-14 h-14 rounded-2xl bg-nike-red/10 text-nike-red flex items-center justify-center text-2xl shrink-0 group-hover:bg-nike-red group-hover:text-white transition-all">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-nike-dark mb-1">24/7 Dedicated Support</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">Our support team is available round-the-clock to assist your shopping needs.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-nike-dark text-white pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-gray-800">
+                
+                <!-- Col 1: Brand -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center gap-2">
+                        <svg class="h-8 w-auto fill-white" viewBox="0 0 24 24">
+                            <path d="M21.71 6.3a.996.996 0 0 0-.85-.3c-2.31.33-6.68 1.63-10.82 4.38-3.08 2.05-5.91 4.79-8.41 8.16-.39.52-.08 1.27.56 1.35.32.04.64-.06.88-.27 4.54-3.95 9.87-6.23 15.58-6.73.54-.05 1.18-.55 1.06-1.12l-1-5.47z"/>
+                        </svg>
+                        <span class="font-extrabold text-2xl tracking-tighter uppercase">NIKE</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                        Our mission is what drives us to do everything possible to expand human potential. We do that by creating groundbreaking sport innovations.
+                    </p>
+                    <div class="flex gap-3 pt-2">
+                        <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-nike-red hover:text-white transition-colors"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-nike-red hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-nike-red hover:text-white transition-colors"><i class="fa-brands fa-instagram text-xs"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Quick Links -->
+                <div>
+                    <h5 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Get Help</h5>
+                    <ul class="space-y-2.5 text-xs text-gray-400 font-medium">
+                        <li><a href="#" class="hover:text-white transition-colors">Order Status</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Shipping & Delivery</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Returns & Refunds</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Payment Options</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Categories -->
+                <div>
+                    <h5 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Categories</h5>
+                    <ul class="space-y-2.5 text-xs text-gray-400 font-medium">
+                        <li><a href="#" class="hover:text-white transition-colors">Air Max Shoes</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Running Sneakers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Basketball High Tops</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Lifestyle Editions</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Custom Apparel</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Newsletter -->
+                <div>
+                    <h5 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Newsletter</h5>
+                    <p class="text-xs text-gray-400 mb-3">Subscribe to receive updates, access to exclusive deals, and more.</p>
+                    <form onsubmit="handleSubscribe(event)" class="space-y-2">
+                        <input type="email" placeholder="Enter your email" required class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-nike-red">
+                        <button type="submit" class="w-full py-2 bg-nike-red text-white font-bold text-xs rounded-lg hover:bg-red-600 transition-colors uppercase tracking-wider">Subscribe</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Bottom Legal -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <p>&copy; 2026 Nike, Inc. All Rights Reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Sale</a>
+                    <a href="#" class="hover:text-gray-400">Nike Journal</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Modal Drawer -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" id="cart-overlay"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-nike-red text-xl"></i>
+                        <h3 class="font-extrabold text-xl text-nike-dark">Your Cart</h3>
+                    </div>
+                    <button id="close-cart" class="p-2 text-gray-400 hover:text-nike-dark rounded-full">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items Container -->
+                <div class="p-6 overflow-y-auto flex-1 space-y-4" id="cart-items-container">
+                    <!-- Dynamic rendering -->
+                </div>
+
+                <!-- Drawer Footer -->
+                <div class="p-6 border-t border-gray-100 bg-gray-50 space-y-4">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-gray-500">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal" class="font-semibold text-nike-dark">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-500">
+                            <span>Estimated Shipping</span>
+                            <span class="font-semibold text-emerald-600">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-extrabold text-nike-dark pt-2 border-t border-gray-200">
+                            <span>Total</span>
+                            <span id="cart-total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <button onclick="checkout()" class="w-full py-4 bg-nike-dark text-white font-bold rounded-xl hover:bg-nike-red transition-all shadow-lg flex items-center justify-center gap-2">
+                        <span>CHECKOUT NOW</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- User Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative animate-scaleUp">
+            
+            <button id="close-login" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-nike-red hover:text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <div class="inline-flex p-3 rounded-2xl bg-nike-red/10 text-nike-red mb-3">
+                        <i class="fa-solid fa-user text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-nike-dark">Welcome Back</h3>
+                    <p class="text-xs text-gray-500 mt-1">Sign in to your Nike Member account</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Email / Username</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input type="text" placeholder="member@nike.com" required class="w-full pl-9 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-nike-red">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Password</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input type="password" placeholder="••••••••" required class="w-full pl-9 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-nike-red">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs">
+                        <label class="flex items-center gap-2 cursor-pointer text-gray-600">
+                            <input type="checkbox" class="rounded text-nike-red focus:ring-nike-red">
+                            <span>Remember Me</span>
+                        </label>
+                        <a href="#" class="text-nike-red font-semibold hover:underline">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 bg-nike-dark text-white font-bold rounded-xl hover:bg-nike-red transition-all shadow-lg">
+                        SIGN IN
+                    </button>
+                </form>
+
+                <div class="relative my-6 text-center">
+                    <hr class="border-gray-200">
+                    <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[10px] uppercase font-bold text-gray-400">Or Continue With</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <button class="py-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 flex justify-center items-center transition-colors"><i class="fa-brands fa-google text-red-500"></i></button>
+                    <button class="py-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 flex justify-center items-center transition-colors"><i class="fa-brands fa-apple text-black"></i></button>
+                    <button class="py-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 flex justify-center items-center transition-colors"><i class="fa-brands fa-facebook-f text-blue-600"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Sample Products Database
+        const productsDatabase = [
+            {
+                id: 1,
+                name: "Nike Air Max 270",
+                category: "lifestyle",
+                price: 150.99,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+                description: "Boasting the biggest Air unit yet for an ultra-soft ride."
+            },
+            {
+                id: 2,
+                name: "Nike Air Force 1 '07",
+                category: "lifestyle",
+                price: 110.99,
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=600&q=80",
+                description: "The radiance lives on in the original basketball icon."
+            },
+            {
+                id: 3,
+                name: "Nike ZoomX Vaporfly",
+                category: "running",
+                price: 249.99,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=600&q=80",
+                description: "Engineered for record-breaking speed and responsiveness."
+            },
+            {
+                id: 4,
+                name: "Nike Air Jordan High",
+                category: "basketball",
+                price: 180.99,
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=600&q=80",
+                description: "Heritage style combined with premium leather upper."
+            },
+            {
+                id: 5,
+                name: "Nike Revolution 6",
+                category: "running",
+                price: 70.99,
+                rating: 4,
+                image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=600&q=80",
+                description: "Intuitive comfort with soft cushioning for everyday runners."
+            },
+            {
+                id: 6,
+                name: "Nike Metcon 8",
+                category: "lifestyle",
+                price: 130.99,
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=600&q=80",
+                description: "The gold standard for weight training and durability."
+            },
+            {
+                id: 7,
+                name: "Nike Dunk Low Retro",
+                category: "basketball",
+                price: 115.99,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=600&q=80",
+                description: "Created for the court but taken to the streets."
+            },
+            {
+                id: 8,
+                name: "Nike Pegasus 40",
+                category: "running",
+                price: 139.99,
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=600&q=80",
+                description: "A springy ride for every run with personalized fit."
+            }
+        ];
+
+        // Global State
+        let cart = [];
+        let wishlist = new Set();
+
+        // DOM Elements
+        const productGrid = document.getElementById('product-grid');
+        const cartBadge = document.getElementById('cart-badge');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartSubtotal = document.getElementById('cart-subtotal');
+        const cartTotal = document.getElementById('cart-total');
+        const wishlistCount = document.getElementById('wishlist-count');
+        const loginModal = document.getElementById('login-modal');
+
+        // Application Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(productsDatabase);
+            setupEventListeners();
+            updateCartUI();
+        });
+
+        // Render Product Cards
+        function renderProducts(products) {
+            productGrid.innerHTML = '';
+            
+            if (products.length === 0) {
+                productGrid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-gray-400">
+                        <i class="fa-solid fa-box-open text-4xl mb-3"></i>
+                        <p class="font-bold">No products found matching your search.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            products.forEach(product => {
+                const isWishlisted = wishlist.has(product.id);
+                const card = document.createElement('div');
+                card.className = "group glassmorphic rounded-2xl p-4 shadow-sm border border-gray-200/70 hover:shadow-xl transition-all duration-300 flex flex-col justify-between";
+                
+                card.innerHTML = `
+                    <div>
+                        <!-- Card Top Action Icons -->
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full tracking-wider">${product.category}</span>
+                            <button onclick="toggleWishlist(${product.id})" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-50 flex items-center justify-center transition-colors">
+                                <i class="${isWishlisted ? 'fa-solid text-nike-red' : 'fa-regular text-gray-400'} fa-heart text-sm"></i>
+                            </button>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="relative h-48 w-full mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50/50">
+                            <img src="${product.image}" alt="${product.name}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="space-y-1">
+                            <div class="flex items-center text-amber-400 text-xs gap-1">
+                                ${getStarRatingHTML(product.rating)}
+                                <span class="text-gray-400 text-[10px] ml-1">(${product.rating})</span>
+                            </div>
+                            <h3 class="font-bold text-nike-dark text-base group-hover:text-nike-red transition-colors">${product.name}</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2">${product.description}</p>
+                        </div>
+                    </div>
+
+                    <!-- Card Bottom Price & Action -->
+                    <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-100">
+                        <span class="text-lg font-extrabold text-nike-dark">$${product.price.toFixed(2)}</span>
+                        <button onclick="addToCart(${product.id})" class="px-4 py-2 bg-nike-dark text-white text-xs font-bold rounded-lg hover:bg-nike-red transition-all flex items-center gap-2 shadow-sm active:scale-95">
+                            <i class="fa-solid fa-cart-plus"></i> Add
+                        </button>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        // Star Rating Helper
+        function getStarRatingHTML(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += `<i class="fa-solid fa-star"></i>`;
+                } else if (i - 0.5 === rating) {
+                    stars += `<i class="fa-solid fa-star-half-stroke"></i>`;
+                } else {
+                    stars += `<i class="fa-regular fa-star"></i>`;
+                }
+            }
+            return stars;
+        }
+
+        // Filter Products
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                categoryButtons.forEach(b => {
+                    b.classList.remove('bg-white', 'shadow-sm', 'text-nike-dark');
+                    b.classList.add('text-gray-600');
+                });
+                e.target.classList.add('bg-white', 'shadow-sm', 'text-nike-dark');
+                e.target.classList.remove('text-gray-600');
+
+                const cat = e.target.dataset.category;
+                if (cat === 'all') {
+                    renderProducts(productsDatabase);
+                } else {
+                    const filtered = productsDatabase.filter(p => p.category === cat);
+                    renderProducts(filtered);
+                }
+            });
+        });
+
+        // Search Logic
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = productsDatabase.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        });
+
+        // Toggle Wishlist State
+        function toggleWishlist(id) {
+            if (wishlist.has(id)) {
+                wishlist.delete(id);
+                showToast('Removed from Wishlist', 'info');
+            } else {
+                wishlist.add(id);
+                showToast('Added to Wishlist!', 'success');
+            }
+            wishlistCount.textContent = wishlist.size;
+            wishlistCount.style.opacity = wishlist.size > 0 ? '1' : '0';
+            renderProducts(productsDatabase);
+        }
+
+        // Cart State Management
+        function addToCart(productId) {
+            const product = productsDatabase.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            showToast(`${product.name} added to cart!`, 'success');
+        }
+
+        function addCustomizedToCart() {
+            const customShoe = {
+                id: Date.now(),
+                name: "Nike Air Custom Edition",
+                category: "Custom",
+                price: 189.99,
+                image: document.getElementById('customizer-preview').src,
+                quantity: 1
+            };
+            cart.push(customShoe);
+            updateCartUI();
+            openCartDrawer();
+            showToast('Custom sneaker added to cart!', 'success');
+        }
+
+        function updateQuantity(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            // Update Badges
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartBadge.textContent = totalCount;
+
+            // Render Drawer Cart Items
+            cartItemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center text-gray-400 py-12">
+                        <i class="fa-solid fa-bag-shopping text-5xl mb-4 text-gray-300"></i>
+                        <p class="font-bold text-gray-600">Your shopping bag is empty.</p>
+                        <p class="text-xs text-gray-400 mt-1">Explore our collection to add items.</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = "flex items-center gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100";
+                    itemEl.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg bg-white">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm text-nike-dark truncate">${item.name}</h4>
+                            <p class="text-xs font-semibold text-nike-red">$${item.price.toFixed(2)}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-5 h-5 rounded bg-gray-200 text-gray-600 text-xs font-bold flex items-center justify-center hover:bg-gray-300">-</button>
+                                <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-5 h-5 rounded bg-gray-200 text-gray-600 text-xs font-bold flex items-center justify-center hover:bg-gray-300">+</button>
+                            </div>
+                        </div>
+                        <button onclick="updateQuantity(${item.id}, -${item.quantity})" class="text-gray-400 hover:text-nike-red p-1">
+                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        </button>
+                    `;
+                    cartItemsContainer.appendChild(itemEl);
+                });
+            }
+
+            // Calculate Totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            cartTotal.textContent = `$${subtotal.toFixed(2)}`;
+        }
+
+        // Customizer Image Switcher
+        function changeCustomizerImage(src) {
+            const preview = document.getElementById('customizer-preview');
+            preview.style.opacity = '0';
+            setTimeout(() => {
+                preview.src = src;
+                preview.style.opacity = '1';
+            }, 200);
+        }
+
+        // Size Selector Toggle
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.size-btn').forEach(b => {
+                    b.classList.remove('bg-nike-red', 'text-white', 'border-nike-red');
+                    b.classList.add('border-gray-700');
+                });
+                e.target.classList.add('bg-nike-red', 'text-white', 'border-nike-red');
+            });
+        });
+
+        // Event Listeners for Modals & Drawers
+        function setupEventListeners() {
+            // Cart Modal Toggle
+            document.getElementById('cart-btn').addEventListener('click', openCartDrawer);
+            document.getElementById('close-cart').addEventListener('click', closeCartDrawer);
+            cartOverlay.addEventListener('click', closeCartDrawer);
+
+            // Login Modal Toggle
+            document.getElementById('user-btn').addEventListener('click', () => loginModal.classList.remove('hidden'));
+            document.getElementById('close-login').addEventListener('click', () => loginModal.classList.add('hidden'));
+
+            // Search Drawer Toggle
+            const searchBtn = document.getElementById('search-btn');
+            const searchBar = document.getElementById('search-bar');
+            searchBtn.addEventListener('click', () => {
+                searchBar.classList.toggle('hidden');
+                if (!searchBar.classList.contains('hidden')) searchInput.focus();
+            });
+            document.getElementById('close-search').addEventListener('click', () => searchBar.classList.add('hidden'));
+
+            // Mobile Navigation Toggle
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+            document.querySelectorAll('.mobile-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+        }
+
+        function openCartDrawer() { cartDrawer.classList.remove('hidden'); }
+        function closeCartDrawer() { cartDrawer.classList.add('hidden'); }
+
+        // Checkout Action
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Your cart is empty!', 'error');
+                return;
+            }
+            showToast('Order placed successfully! Thank you.', 'success');
+            cart = [];
+            updateCartUI();
+            closeCartDrawer();
+        }
+
+        // Login Handler
+        function handleLogin(e) {
+            e.preventDefault();
+            loginModal.classList.add('hidden');
+            showToast('Successfully logged in!', 'success');
+        }
+
+        // Newsletter Handler
+        function handleSubscribe(e) {
+            e.preventDefault();
+            e.target.reset();
+            showToast('Subscribed to Newsletter!', 'success');
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-nike-dark text-white' : type === 'error' ? 'bg-red-600 text-white' : 'bg-gray-800 text-white';
+            const icon = type === 'success' ? 'fa-check-circle text-emerald-400' : 'fa-info-circle text-blue-400';
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl ${bgClass} text-xs font-bold transition-all duration-300 transform translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
